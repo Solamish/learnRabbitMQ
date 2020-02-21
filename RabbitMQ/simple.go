@@ -1,4 +1,4 @@
-package mq
+package RabbitMQ
 
 import (
 	"fmt"
@@ -59,7 +59,7 @@ func NewSimplePattern(queueName string) *RabbitMQ {
 	return NewRabbitMQ(queueName, "", "")
 }
 
-func (m *RabbitMQ) PublicSimple(message string) {
+func (m *RabbitMQ) PublishSimple(message string) {
 	// 1.申请队列
 	_, err := m.channel.QueueDeclare(m.QueueName,
 		// 是否持久化
@@ -78,7 +78,7 @@ func (m *RabbitMQ) PublicSimple(message string) {
 	// 2.发送消息到队列
 	_ = m.channel.Publish(
 		m.Exchange,
-		m.Key,
+		m.QueueName,
 		// 如果设置为true， 会根据exchange的类型和routekey规则寻找队列，
 		// 如果无法找到符合规则的队列，那么发送的消息会返回给发送者
 		false,
@@ -92,7 +92,7 @@ func (m *RabbitMQ) PublicSimple(message string) {
 
 func (m *RabbitMQ) ConsumeSimple() {
 	// 1.声明队列
-	_, err := m.channel.QueueDeclare(m.QueueName,
+	q, err := m.channel.QueueDeclare(m.QueueName,
 		// 是否持久化
 		false,
 		// 是否自动删除
@@ -108,7 +108,7 @@ func (m *RabbitMQ) ConsumeSimple() {
 	}
 	// 2.接受消息
 	msgs, err := m.channel.Consume(
-		m.QueueName,
+		q.Name,
 		"",
 		// 是否自动应答
 		true,
@@ -125,6 +125,6 @@ func (m *RabbitMQ) ConsumeSimple() {
 			log.Printf("Received a message: %s",d.Body)
 		}
 	}()
-
+	log.Println("waiting for message")
 	<- forever
 }

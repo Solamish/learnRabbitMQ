@@ -1,9 +1,9 @@
 package main
 
-import "rabbitmq/mq"
+import "rabbitmq/RabbitMQ"
 
 func main() {
-	rabbitMq := mq.NewSimplePattern("testSimple")
+	rabbitMq := RabbitMQ.NewSimplePattern("testSimple")
 	rabbitMq.ConsumeSimple()
 }
 

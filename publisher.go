@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"rabbitmq/mq"
+	"rabbitmq/RabbitMQ"
 )
 
 func main() {
-	rabbitMq := mq.NewSimplePattern("testSimple")
+	rabbitMq := RabbitMQ.NewSimplePattern("testSimple")
 	rabbitMq.PublicSimple("hello, world")
 	fmt.Println("发送成功")
 }
